@@ -133,3 +133,6 @@ dmypy.json
 
 # Documents
 Documents/
+
+# ColBERT
+ColBERT/
