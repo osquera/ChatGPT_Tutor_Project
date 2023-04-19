@@ -1,0 +1,6 @@
+.env
+*.pdf
+
+gen/
+test/
+train/
