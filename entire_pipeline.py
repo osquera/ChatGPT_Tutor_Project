@@ -1,5 +1,5 @@
 from typing import Tuple, Any
-
+import tensorflow as tf
 import numpy as np
 import pandas as pd
 import matplotlib.pyplot as plt
@@ -20,6 +20,66 @@ from dotenv import load_dotenv
 
 load_dotenv()
 openai.api_key = os.getenv('OPENAI_API_KEY')
+
+@tf.keras.utils.register_keras_serializable()
+class WeightedCosineSimilarity(tf.keras.layers.Layer):
+
+    def __init__(self, units = 128, activation=None, **kwargs):
+        '''Initializes the class and sets up the internal variables'''
+
+        super(WeightedCosineSimilarity, self).__init__(**kwargs)
+        self.units = units
+        self.activation = tf.keras.activations.get(activation)
+
+    def get_config(self):
+        config = super(WeightedCosineSimilarity, self).get_config()
+        return config
+
+
+    def build(self, input_shape):
+        '''Create the state of the layer (weights)'''
+        # W should be half the size of the input and should be ones
+        w_init = tf.ones_initializer()
+        w_init_val = w_init(shape=(int(input_shape[-1] / 2),), dtype='float32')
+        self.w = tf.Variable(initial_value=w_init_val, trainable='true')
+
+
+
+    def call(self, inputs):
+        '''Defines the computation from inputs to outputs'''
+        # Take the first half of the input which is U:
+        U = inputs[:, :int(inputs.shape[-1] / 2)] # (128, 768)
+        # Take the second half of the input which is V:
+        V = inputs[:, int(inputs.shape[-1] / 2):] # (128, 768)
+
+        # Compute the element wise product of U, V and W
+        UW = tf.multiply(U, tf.exp(self.w)) # (128, 768) * (768)
+        # Compute the multiplication of UW and V
+
+        VW = tf.multiply(V, tf.exp(self.w)) # (128, 768) * (768)
+
+        UWVW = tf.multiply(UW, VW) # (128, 768) * (768)
+
+        # Sum the result over the second axis
+        WUV = tf.reduce_sum(UWVW, axis=1) # (128, 768) -> (128, 1)
+        # Square UW and VW
+        WU_squared = tf.square(UW) # (128, 768) -> (128, 768)
+        WV_squared = tf.square(VW) # (128, 768) -> (128, 768)
+
+        # Sum the result over the second axis
+        WU_squared_sum = tf.reduce_sum(WU_squared, axis=1)  # (128, 768) -> (128, 1)
+        WV_squared_sum = tf.reduce_sum(WV_squared, axis=1)  # (128, 768) -> (128, 1)
+
+        # take the root of the sum of squares of WUV, WU_squared and WV_squared
+        WU_squared_root = tf.sqrt(WU_squared_sum) # (128, 1)
+        WV_squared_root = tf.sqrt(WV_squared_sum) # (128, 1)
+
+        denominator = tf.multiply(WU_squared_root, WV_squared_root) # (128, 1) * (128, 1) = (128, 1)
+
+        # divide WUV by the denominator
+        WUV_div_denominator = tf.divide(WUV, denominator)
+
+        return self.activation(WUV_div_denominator)
 
 
 def pipeline(query: str, method: str = 'cs') -> str:
@@ -96,17 +156,17 @@ def semantic_search_model(embedding: np.ndarray, method: str = 'ann') -> str:
         with open('model_cos.json', 'r') as json_file:
             loaded_model_json = json_file.read()
         json_file.close()
-        loaded_model = model_from_json(loaded_model_json)
+        loaded_model = model_from_json(loaded_model_json, custom_objects={'CustomLayer': WeightedCosineSimilarity})
         # load weights into new model
-        loaded_model.load_weights("model_cos.h5")
+        loaded_model.load_weights("ANN/model_cos.h5")
         print("Loaded model from disk")
         # Predict the most relevant context
         prediction = loaded_model.predict(model_input)
         # Get the 2 most relevant contexts
         index = np.argsort(prediction, axis=0)[-2:]
         # Get the context
-        context1 = df.iloc[index[0][0]]['context']
-        context2 = df.iloc[index[1][0]]['context']
+        context1 = df.iloc[index[0]]['context']
+        context2 = df.iloc[index[1]]['context']
         context = context1 + context2
 
 
@@ -167,7 +227,7 @@ def answer_generation(query: str, context: str = "", pipeline_mode=True) -> tupl
 if __name__ == "__main__":
     # Read in the data
     query = "Which linkage function uses the eucladian distance? Does both maximum and average linkage use the eucladian distance?"
-    answer_pipeline = pipeline(query, method='cs')
+    answer_pipeline = pipeline(query, method='weighted_cs')
     answer_chatgpt = answer_generation(query, pipeline_mode=False)
     print(answer_pipeline)
     print(answer_chatgpt)
