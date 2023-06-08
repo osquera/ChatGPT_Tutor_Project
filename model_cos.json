@@ -1,0 +1,1 @@
+{"class_name": "Sequential", "config": {"name": "sequential_4", "layers": [{"class_name": "InputLayer", "config": {"batch_input_shape": [null, 1536], "dtype": "float32", "sparse": false, "ragged": false, "name": "weighted_cosine_similarity_6_input"}}, {"class_name": "WeightedCosineSimilarity", "config": {"units": 128}}]}, "keras_version": "2.12.0", "backend": "tensorflow"}
