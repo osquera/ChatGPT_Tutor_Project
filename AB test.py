@@ -29,10 +29,10 @@ responses = []  # Track selected responses
 for question in questions:
 
     #uses the pipeline to genrerate responses
-    # best_context, answer_pipeline, answer_chatgpt = chatbot(question)
+    best_context, answer_pipeline, answer_chatgpt = chatbot(question)
 
     #Just for testing without using the api
-    best_context, answer_pipeline, answer_chatgpt = "1", "2", "3"
+    #best_context, answer_pipeline, answer_chatgpt = "1", "2", "3"
     input_choices = [answer_pipeline, answer_chatgpt]
     #shuffles the answers
     shuffled_choices = sorted(input_choices, key=lambda k: random.random())
