@@ -15,6 +15,6 @@ outputs = [gr.outputs.Textbox(label="Most similar context"),gr.outputs.Textbox(l
 
 gr.Interface(fn=chatbot, inputs=inputs, outputs=outputs, title="AI Chatbot",
              description="Ask anything you want",
-             theme="compact",live=True).launch(share=False)
+             theme="compact").launch(share=False)
 
 

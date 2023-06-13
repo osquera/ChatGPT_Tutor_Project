@@ -19,7 +19,7 @@ import os
 from dotenv import load_dotenv
 
 load_dotenv()
-openai.api_key = os.getenv("OPENAI_API_KEY")
+openai.api_key = os.getenv('OPENAI_API_KEY')
 
 @tf.keras.utils.register_keras_serializable()
 class WeightedCosineSimilarity(tf.keras.layers.Layer):
@@ -82,22 +82,23 @@ class WeightedCosineSimilarity(tf.keras.layers.Layer):
         return self.activation(WUV_div_denominator)
 
 
-def pipeline(query: str, method: str = 'cs') -> str:
+def pipeline(query: str, method: str = 'cs', n_contexts: int = 5) -> str:
     """
     This function is the pipeline for the entire project. It takes in a query and finds the most relevant document.
     and gives it to the OpenAI API to generate a answer
-    :param semantic_search_model:
-    :param query:
+    :param n_contexts: The number of contexts to return
+    :param semantic_search_model: The semantic search model to use
+    :param query: The query to search for
     :return:
     """
     # 1. Preprocess the query
     embedding = get_text_embedding(query)
     # 2. Semantic Search
-    best_ctx = semantic_search_model(embedding, method)
+    best_ctx = semantic_search_model(embedding, method, n_contexts)
     # 3. Answer Generation
     answer = answer_generation(query, best_ctx)
     # 4. Return the answer
-    return answer, best_ctx
+    return answer
 
 
 def get_text_embedding(text, model_name='bert-base-uncased'):
@@ -118,14 +119,15 @@ def get_text_embedding(text, model_name='bert-base-uncased'):
     return embedding
 
 
-def semantic_search_model(embedding: np.ndarray, method: str = 'ann') -> str:
+def semantic_search_model(embedding: np.ndarray, method: str = 'ann', n_contexts: int = 5) -> str:
     """
     This function takes in a query embedding and finds the most relevant document by using the ANN
+    :param n_contexts:  The number of contexts to return
     :param embedding: The query embedding of the query of dimension 768
-    :return: The most relevant 2 most relevant contexts
+    :return: The most relevant n contexts
     """
     # load the dataset
-    df = pd.read_pickle('C:/Users/farim/PycharmProjects/ChatGPT_Tutor_Project/Data_Generation/df_pickle/question-context-20-emb.pkl')
+    df = pd.read_pickle('./Data_Generation/df_pickle/final_02450_emb.pkl')
     # load the embeddings
     # make the df only contain the unique contexts
     df = df.drop_duplicates(subset=['context'])
@@ -146,11 +148,12 @@ def semantic_search_model(embedding: np.ndarray, method: str = 'ann') -> str:
         # Predict the most relevant context
         prediction = loaded_model.predict(model_input)
         # Get the 2 most relevant contexts
-        index = np.argsort(prediction, axis=0)[-2:]
+        index = np.argsort(prediction, axis=0)[-n_contexts:]
         # Get the context
-        context1 = df.iloc[index[0][0]]['context']
-        context2 = df.iloc[index[1][0]]['context']
-        context = context1 + context2
+        best_ctx_lst = sum([df.iloc[i]['context'].to_numpy()[0] for i in index])
+        best_ctx = '. '.join(best_ctx_lst)
+        return best_ctx
+
 
     if method == 'weighted_cs':
         with open('model_cos.json', 'r') as json_file:
@@ -163,11 +166,12 @@ def semantic_search_model(embedding: np.ndarray, method: str = 'ann') -> str:
         # Predict the most relevant context
         prediction = loaded_model.predict(model_input)
         # Get the 2 most relevant contexts
-        index = np.argsort(prediction, axis=0)[-2:]
+        index = np.argsort(prediction, axis=0)[-n_contexts:]
         # Get the context
-        context1 = df.iloc[index[0]]['context']
-        context2 = df.iloc[index[1]]['context']
-        context = context1
+        best_ctx_lst = sum([df.iloc[i]['context'].to_numpy()[0] for i in index])
+        best_ctx = '. '.join(best_ctx_lst)
+        return best_ctx
+
 
 
     elif method == 'cs':
@@ -176,16 +180,17 @@ def semantic_search_model(embedding: np.ndarray, method: str = 'ann') -> str:
         y = context_embeddings
         cos_sim = np.dot(x, y.T) / (np.linalg.norm(x) * np.linalg.norm(y, axis=1))
         # Get the 2 most relevant contexts
-        index = np.argsort(cos_sim, axis=0)[-2:]
+        index = np.argsort(cos_sim, axis=0)[-n_contexts:]
         # Get the context
-        context1 = df.iloc[index[0]]['context']
-        context2 = df.iloc[index[1]]['context']
-        context = context1 + context2
-
-    return context
+        best_ctx_lst = sum([df.iloc[i]['context'].to_numpy()[0] for i in index])
+        best_ctx = '. '.join(best_ctx_lst)
+        return best_ctx
 
 
-def answer_generation(query: str, context: str = "", pipeline_mode=True):
+    return "ERROR: Possible methods are 'ann', 'weighted_cs' and 'cs'"
+
+
+def answer_generation(query: str, context: str = "", pipeline_mode=True) -> tuple[str, str] | Any:
     """
     This function takes in a query and a context and uses the OpenAI API to generate an answer
     :param query:
@@ -193,7 +198,7 @@ def answer_generation(query: str, context: str = "", pipeline_mode=True):
     :return:
     """
     if pipeline_mode:
-        #print(f'CONTEXT: ```{context}``` QUESTION: ```{query}``` ANSWER:')
+        print(f'CONTEXT: ```{context}``` QUESTION: ```{query}``` ANSWER:')
         try:
             completion = openai.ChatCompletion.create(
                 model="gpt-3.5-turbo",
@@ -221,13 +226,13 @@ def answer_generation(query: str, context: str = "", pipeline_mode=True):
         except Exception as e:
             return "OPENAI_ERROR:", str(e)
 
-    return completion.choices[0].message.content
+    return completion.choices[0]
 
 
 if __name__ == "__main__":
     # Read in the data
     query = "Which linkage function uses the eucladian distance? Does both maximum and average linkage use the eucladian distance?"
-    answer_pipeline, best_context = pipeline(query, method='cs')
+    answer_pipeline = pipeline(query, method='ann', n_contexts=2)
     answer_chatgpt = answer_generation(query, pipeline_mode=False)
     print(answer_pipeline)
     print(answer_chatgpt)
