@@ -19,7 +19,7 @@ import os
 from dotenv import load_dotenv
 
 load_dotenv()
-openai.api_key = os.getenv('OPENAI_API_KEY')
+openai.api_key = os.getenv("OPENAI_API_KEY")
 
 @tf.keras.utils.register_keras_serializable()
 class WeightedCosineSimilarity(tf.keras.layers.Layer):
@@ -97,7 +97,7 @@ def pipeline(query: str, method: str = 'cs') -> str:
     # 3. Answer Generation
     answer = answer_generation(query, best_ctx)
     # 4. Return the answer
-    return answer
+    return answer, best_ctx
 
 
 def get_text_embedding(text, model_name='bert-base-uncased'):
@@ -125,7 +125,7 @@ def semantic_search_model(embedding: np.ndarray, method: str = 'ann') -> str:
     :return: The most relevant 2 most relevant contexts
     """
     # load the dataset
-    df = pd.read_pickle('./Data_Generation/df_pickle/question-context-20-emb.pkl')
+    df = pd.read_pickle('C:/Users/farim/PycharmProjects/ChatGPT_Tutor_Project/Data_Generation/df_pickle/question-context-20-emb.pkl')
     # load the embeddings
     # make the df only contain the unique contexts
     df = df.drop_duplicates(subset=['context'])
@@ -167,7 +167,7 @@ def semantic_search_model(embedding: np.ndarray, method: str = 'ann') -> str:
         # Get the context
         context1 = df.iloc[index[0]]['context']
         context2 = df.iloc[index[1]]['context']
-        context = context1 + context2
+        context = context1
 
 
     elif method == 'cs':
@@ -185,7 +185,7 @@ def semantic_search_model(embedding: np.ndarray, method: str = 'ann') -> str:
     return context
 
 
-def answer_generation(query: str, context: str = "", pipeline_mode=True) -> tuple[str, str] | Any:
+def answer_generation(query: str, context: str = "", pipeline_mode=True):
     """
     This function takes in a query and a context and uses the OpenAI API to generate an answer
     :param query:
@@ -193,7 +193,7 @@ def answer_generation(query: str, context: str = "", pipeline_mode=True) -> tupl
     :return:
     """
     if pipeline_mode:
-        print(f'CONTEXT: ```{context}``` QUESTION: ```{query}``` ANSWER:')
+        #print(f'CONTEXT: ```{context}``` QUESTION: ```{query}``` ANSWER:')
         try:
             completion = openai.ChatCompletion.create(
                 model="gpt-3.5-turbo",
@@ -221,13 +221,13 @@ def answer_generation(query: str, context: str = "", pipeline_mode=True) -> tupl
         except Exception as e:
             return "OPENAI_ERROR:", str(e)
 
-    return completion.choices[0]
+    return completion.choices[0].message.content
 
 
 if __name__ == "__main__":
     # Read in the data
     query = "Which linkage function uses the eucladian distance? Does both maximum and average linkage use the eucladian distance?"
-    answer_pipeline = pipeline(query, method='weighted_cs')
+    answer_pipeline, best_context = pipeline(query, method='cs')
     answer_chatgpt = answer_generation(query, pipeline_mode=False)
     print(answer_pipeline)
     print(answer_chatgpt)
