@@ -140,8 +140,8 @@ def semantic_search_model(embedding: np.ndarray, method: str = 'ann', n_contexts
         # Get the 2 most relevant contexts
         index = np.argsort(prediction, axis=0)[-n_contexts:]
         # Get the context
-        best_ctx_lst = [df.iloc[i]['context'].to_numpy()[0] for i in index]
-        best_ctx = '. '.join(best_ctx_lst)
+        best_ctx_lst = [f'CONTEXT {i+1}: ```{df.iloc[j]["context"].to_numpy()[0]}```' for i,j in enumerate(index)]
+        best_ctx = ''.join(best_ctx_lst)
         return best_ctx
 
 
@@ -158,8 +158,8 @@ def semantic_search_model(embedding: np.ndarray, method: str = 'ann', n_contexts
         # Get the 2 most relevant contexts
         index = np.argsort(prediction, axis=0)[-n_contexts:]
         # Get the context
-        best_ctx_lst = [df.iloc[i]['context'] for i in index]
-        best_ctx = '. '.join(best_ctx_lst)
+        best_ctx_lst = [f'CONTEXT {i+1}: ```{df.iloc[j]["context"]}```' for i,j in enumerate(index)]
+        best_ctx = ''.join(best_ctx_lst)
         return best_ctx
 
 
