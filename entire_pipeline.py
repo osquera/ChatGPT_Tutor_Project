@@ -4,7 +4,7 @@ import numpy as np
 import pandas as pd
 import matplotlib.pyplot as plt
 
-from transformers import AutoTokenizer, AutoModel
+from sentence_transformers import SentenceTransformer, util
 import torch
 
 # for not seeing a warning message
@@ -98,23 +98,13 @@ def pipeline(query: str, method: str = 'cs', n_contexts: int = 5) -> str:
     # 3. Answer Generation
     answer = answer_generation(query, best_ctx)
     # 4. Return the answer
-    return answer
+    return answer, best_ctx
 
 
-def get_text_embedding(text, model_name='bert-base-uncased'):
+def get_text_embedding(text: str):
     # Load pre-trained model and tokenizer
-    tokenizer = AutoTokenizer.from_pretrained(model_name)
-    model = AutoModel.from_pretrained(model_name)
-
-    # Tokenize input text and convert to PyTorch tensors
-    inputs = tokenizer(text, padding=True, truncation=True, return_tensors='pt')
-
-    # Get output from pre-trained model
-    with torch.no_grad():
-        outputs = model(**inputs)
-
-    # Extract last layer of output (CLS token) as the text embedding
-    embedding = outputs.last_hidden_state.mean(dim=1).squeeze()
+    model = SentenceTransformer('sentence-transformers/multi-qa-mpnet-base-cos-v1')
+    embedding = model.encode(text, convert_to_tensor=True)
 
     return embedding
 
@@ -150,7 +140,7 @@ def semantic_search_model(embedding: np.ndarray, method: str = 'ann', n_contexts
         # Get the 2 most relevant contexts
         index = np.argsort(prediction, axis=0)[-n_contexts:]
         # Get the context
-        best_ctx_lst = sum([df.iloc[i]['context'].to_numpy()[0] for i in index])
+        best_ctx_lst = [df.iloc[i]['context'].to_numpy()[0] for i in index]
         best_ctx = '. '.join(best_ctx_lst)
         return best_ctx
 
@@ -168,7 +158,7 @@ def semantic_search_model(embedding: np.ndarray, method: str = 'ann', n_contexts
         # Get the 2 most relevant contexts
         index = np.argsort(prediction, axis=0)[-n_contexts:]
         # Get the context
-        best_ctx_lst = sum([df.iloc[i]['context'].to_numpy()[0] for i in index])
+        best_ctx_lst = [df.iloc[i]['context'].to_numpy()[0] for i in index]
         best_ctx = '. '.join(best_ctx_lst)
         return best_ctx
 
@@ -190,7 +180,7 @@ def semantic_search_model(embedding: np.ndarray, method: str = 'ann', n_contexts
     return "ERROR: Possible methods are 'ann', 'weighted_cs' and 'cs'"
 
 
-def answer_generation(query: str, context: str = "", pipeline_mode=True) -> tuple[str, str] | Any:
+def answer_generation(query: str, context: str = "", pipeline_mode=True):
     """
     This function takes in a query and a context and uses the OpenAI API to generate an answer
     :param query:
@@ -231,8 +221,8 @@ def answer_generation(query: str, context: str = "", pipeline_mode=True) -> tupl
 
 if __name__ == "__main__":
     # Read in the data
-    query = "Which linkage function uses the eucladian distance? Does both maximum and average linkage use the eucladian distance?"
-    answer_pipeline = pipeline(query, method='cs', n_contexts=2)
+    query = "What is the purpose of the Introduction to Machine Learning and Data Mining Lecture notes?"
+    answer_pipeline = pipeline(query, method='ann', n_contexts=2)
     answer_chatgpt = answer_generation(query, pipeline_mode=False)
     print(answer_pipeline)
     print(answer_chatgpt)
