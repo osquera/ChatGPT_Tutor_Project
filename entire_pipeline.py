@@ -195,7 +195,7 @@ def answer_generation(query: str, context: str = "", pipeline_mode=True):
                 temperature=0,
                 messages=[
                     {"role": "system",
-                     "content": "You are a Teachers Assistant and you should answer the QUESTION using the information given in the following context paragraphs CONTEXT, if the CONTEXT is unrelated, you should ignore it."},
+                     "content": "You are a Teachers Assistant and you should answer the QUESTION using the information given in the following context paragraphs CONTEXT, if the CONTEXT is unrelated, you should ignore it. If no context is related, you should say that this question cannot be answered from the material."},
                     {"role": "user", "content": f'{context} QUESTION: ```{query}``` ANSWER:'},
                 ]
             )
