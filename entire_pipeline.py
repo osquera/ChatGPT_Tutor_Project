@@ -182,7 +182,7 @@ def semantic_search_model(embedding: np.ndarray, method: str = 'ann', n_contexts
         # Get the 2 most relevant contexts
         index = np.argsort(cos_sim, axis=0)[-n_contexts:]
         # Get the context
-        best_ctx_lst = sum([df.iloc[i]['context'].to_numpy()[0] for i in index])
+        best_ctx_lst = [df.iloc[i]['context'] for i in index]
         best_ctx = '. '.join(best_ctx_lst)
         return best_ctx
 
@@ -232,7 +232,7 @@ def answer_generation(query: str, context: str = "", pipeline_mode=True) -> tupl
 if __name__ == "__main__":
     # Read in the data
     query = "Which linkage function uses the eucladian distance? Does both maximum and average linkage use the eucladian distance?"
-    answer_pipeline = pipeline(query, method='ann', n_contexts=2)
+    answer_pipeline = pipeline(query, method='cs', n_contexts=2)
     answer_chatgpt = answer_generation(query, pipeline_mode=False)
     print(answer_pipeline)
     print(answer_chatgpt)
