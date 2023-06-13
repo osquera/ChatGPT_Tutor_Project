@@ -158,7 +158,7 @@ def semantic_search_model(embedding: np.ndarray, method: str = 'ann', n_contexts
         # Get the 2 most relevant contexts
         index = np.argsort(prediction, axis=0)[-n_contexts:]
         # Get the context
-        best_ctx_lst = [df.iloc[i]['context'].to_numpy()[0] for i in index]
+        best_ctx_lst = [df.iloc[i]['context'] for i in index]
         best_ctx = '. '.join(best_ctx_lst)
         return best_ctx
 
@@ -216,7 +216,7 @@ def answer_generation(query: str, context: str = "", pipeline_mode=True):
         except Exception as e:
             return "OPENAI_ERROR:", str(e)
 
-    return completion.choices[0]
+    return completion.choices[0].message.content
 
 
 if __name__ == "__main__":
