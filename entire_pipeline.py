@@ -172,8 +172,8 @@ def semantic_search_model(embedding: np.ndarray, method: str = 'ann', n_contexts
         # Get the 2 most relevant contexts
         index = np.argsort(cos_sim, axis=0)[-n_contexts:]
         # Get the context
-        best_ctx_lst = [df.iloc[i]['context'] for i in index]
-        best_ctx = '. '.join(best_ctx_lst)
+        best_ctx_lst = [f'CONTEXT {i+1}: ```{df.iloc[j]["context"]}```' for i,j in enumerate(index)]
+        best_ctx = ''.join(best_ctx_lst)
         return best_ctx
 
 
@@ -188,15 +188,15 @@ def answer_generation(query: str, context: str = "", pipeline_mode=True):
     :return:
     """
     if pipeline_mode:
-        print(f'CONTEXT: ```{context}``` QUESTION: ```{query}``` ANSWER:')
+        print(f'{context} QUESTION: ```{query}``` ANSWER:')
         try:
             completion = openai.ChatCompletion.create(
                 model="gpt-3.5-turbo",
                 temperature=0,
                 messages=[
                     {"role": "system",
-                     "content": "You are a Teachers Assistant and you should answer the QUESTION using the information given in the CONTEXT, if the CONTEXT is unrelated, you should ignore it."},
-                    {"role": "user", "content": f'CONTEXT: ```{context}``` QUESTION: ```{query}``` ANSWER:'},
+                     "content": "You are a Teachers Assistant and you should answer the QUESTION using the information given in the following context paragraphs CONTEXT, if the CONTEXT is unrelated, you should ignore it."},
+                    {"role": "user", "content": f'{context} QUESTION: ```{query}``` ANSWER:'},
                 ]
             )
         except Exception as e:
