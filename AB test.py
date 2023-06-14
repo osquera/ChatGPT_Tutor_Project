@@ -23,6 +23,26 @@ questions = [
     "How can you handle missing data in a machine learning dataset?",
 ]
 
+
+def pipeline(query: str, method: str = 'cs', n_contexts: int = 5, chatgpt_prompt = "You are a Teachers Assistant and you should answer the QUESTION using the information given in the CONTEXT, if the CONTEXT is unrelated, you should ignore it."):
+    """
+    This function is the pipeline for the entire project. It takes in a query and finds the most relevant document.
+    and gives it to the OpenAI API to generate a answer
+    :param n_contexts: The number of contexts to return
+    :param semantic_search_model: The semantic search model to use
+    :param query: The query to search for
+    :return:
+    """
+    # 1. Preprocess the query
+    embedding = get_text_embedding(query)
+    # 2. Semantic Search
+    best_ctx = semantic_search_model(embedding, method, n_contexts)
+    # 3. Answer Generation
+    answer = answer_generation(query, best_ctx, chatgpt_prompt)
+    # 4. Return the answer
+    return answer, best_ctx
+
+
 outputs = gr.outputs.Textbox()
 inputs = []
 responses = []  # Track selected responses
@@ -40,7 +60,7 @@ for question in questions:
     responses.append(input_choices)  # Add choices to selected_responses
 
 def evaluate_responses(*preferred_responses):
-    # counnt how many times each answer was chosen
+    # count how many times each answer was chosen
     count_pipeline = 0
     count_chatgpt = 0
     for i, respons in enumerate(preferred_responses):

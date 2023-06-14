@@ -3,39 +3,56 @@ from entire_pipeline import*
 import gradio as gr
 
 # a/b test for similarity score
+
+def get_context(query: str, method: str = 'cs', n_contexts: int = 5):
+    """
+    This function is the pipeline for the entire project. It takes in a query and finds the most relevant document.
+    and gives it to the OpenAI API to generate a answer
+    :param n_contexts: The number of contexts to return
+    :param semantic_search_model: The semantic search model to use
+    :param query: The query to search for
+    :return:
+    """
+    # 1. Preprocess the query
+    embedding = get_text_embedding(query)
+    # 2. Semantic Search
+    best_ctx = semantic_search_model(embedding, method, n_contexts)
+    # 4. Return best context
+    return best_ctx
+
 def chatbot(input):
     if input:
-        answer_pipeline_cs, _ = pipeline(input, method='cs')
-        answer_pipeline_wcs, _ = pipeline(input, method='weighted_cs')
-        answer_pipeline_ann, _ = pipeline(input, method='ann')
-        answer_chatgpt = answer_generation(input, pipeline_mode=False)
-        return answer_pipeline_cs, answer_pipeline_wcs, answer_pipeline_ann, answer_chatgpt
+        context_cs = get_context(input, method='cs')
+        #context_wcs = get_context(input, method='weighted_cs')
+        context_ann = get_context(input, method='ann')
+        return context_cs, context_ann
 
 
 questions = [
     "What is the purpose of regularization in machine learning?",
     "What is the difference between supervised and unsupervised learning?",
-    "What are the key steps in building a machine learning model?",
-    "What is the role of feature engineering in machine learning?"
-    #"What is the concept of overfitting in machine learning?",
-    #"How does gradient descent work in training a neural network?",
+    "What are the key steps in building a machine learning model?"
+   # "What is the role of feature engineering in machine learning?",
+  #  "What is the concept of overfitting in machine learning?",
+ #   "How does gradient descent work in training a neural network?",
     #"What is the trade-off between bias and variance in machine learning?",
-    #"What is the purpose of cross-validation in machine learning?",
-    #"What are some common evaluation metrics used in machine learning?",
-   # "How can you handle missing data in a machine learning dataset?",
+   # "What is the purpose of cross-validation in machine learning?",
+  #  "What are some common evaluation metrics used in machine learning?",
+ #   "How can you handle missing data in a machine learning dataset?"
 ]
+
 
 outputs = gr.outputs.Textbox()
 inputs = []
 responses = []  # Track selected responses
 for question in questions:
 
-    #uses the pipeline to genrerate responses
-    answer_pipeline_cs, answer_pipeline_wcs, answer_pipeline_ann, answer_chatgpt = chatbot(question)
+    #uses the pipeline to genrerate context paragraphs
+    context_cs, context_ann = chatbot(question)
 
     #Just for testing without using the api
-    #best_context, answer_pipeline, answer_chatgpt = "1", "2", "3"
-    input_choices = [answer_pipeline_cs, answer_pipeline_wcs, answer_pipeline_ann, answer_chatgpt]
+    #answer_pipeline_cs, answer_pipeline_wcs, answer_pipeline_ann, answer_chatgpt = "1", "2", "3", "4"
+    input_choices = [context_cs, context_ann]
     #shuffles the answers
     shuffled_choices = sorted(input_choices, key=lambda k: random.random())
     inputs.append(gr.inputs.Radio(shuffled_choices, label=question, type="value"))
@@ -44,21 +61,15 @@ for question in questions:
 def evaluate_responses(*preferred_responses):
     # counnt how many times each answer was chosen
     count_cs = 0
-    count_wcs = 0
+    #count_wcs = 0
     count_ann = 0
-    count_chatgpt = 0
     for i, respons in enumerate(preferred_responses):
         if respons == responses[i][0]:
             count_cs += 1
         elif respons == responses[i][1]:
-            count_wcs += 1
-
-        elif respons == responses[i][2]:
             count_ann += 1
 
-        elif respons == responses[i][3]:
-            count_chatgpt += 1
-    summary = f"{count_cs} of normal cosine, {count_wcs} of weighted cosine, {count_ann} of ANN and {count_chatgpt} of ChatGPT responses."
+    summary = f"You preferred {count_cs} context paragraphs from cosine similarity and {count_ann} context paragraphs from the ANN."
     return summary
 
 
