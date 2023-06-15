@@ -28,19 +28,11 @@ def chatbot(input):
         return context_cs, context_ann
 
 
-questions = [
-    "What is the purpose of regularization in machine learning?",
-    "What is the difference between supervised and unsupervised learning?",
-    "What are the key steps in building a machine learning model?"
-   # "What is the role of feature engineering in machine learning?",
-  #  "What is the concept of overfitting in machine learning?",
- #   "How does gradient descent work in training a neural network?",
-    #"What is the trade-off between bias and variance in machine learning?",
-   # "What is the purpose of cross-validation in machine learning?",
-  #  "What are some common evaluation metrics used in machine learning?",
- #   "How can you handle missing data in a machine learning dataset?"
-]
+with open('questions.txt') as f:
+    lines = f.readlines()
 
+# select questions to use. Use index in lines to choose.
+questions = [q[:-1] for q in lines[:31]]
 
 outputs = gr.outputs.Textbox()
 inputs = []
