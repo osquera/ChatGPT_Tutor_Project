@@ -28,7 +28,8 @@ associated embeddings.\
 \
 The Notebook [Similarity network](Similarity%20network.ipynb) contains code for training Semantic search models.
 It also includes training plots and ROC curves for the models.
-The 3 datasets used in the test/training are first created in the beginning of the notebook. Then these models are trained and evaluated:
+The 3 datasets used in the test/training are first created in the beginning of the notebook. The datasets are very large (around 20GB) therefore it is not included in the repository, however it will be generated when running the notebook.\
+These models are trained and evaluated:
 
 - The three **ANN's** 
 - The **Weighted Cosine Similarity**
