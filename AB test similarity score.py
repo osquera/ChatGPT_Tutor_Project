@@ -28,7 +28,7 @@ def chatbot(input):
         return context_cs, context_ann
 
 
-with open('message2.txt') as f:
+with open('AB_Questions.txt') as f:
     lines = f.readlines()
 
 # select questions to use. Use index in lines to choose.

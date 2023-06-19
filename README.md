@@ -33,7 +33,11 @@ The 3 datasets used in the test/training are first created in the beginning of t
 - The three **ANN's** 
 - The **Weighted Cosine Similarity**
 
-The weights and structure of the Oversampled ANN and the Weighted CS are saved in the folder [ANN](ANN).
+The weights and structure of the Oversampled ANN and the Weighted CS are saved in the folder [ANN](ANN).\
+\
+Furthermore the files [AB test](AB%20test.py), [AB test relevant context](AB%20test%20relevant%20context.py) and [AB test similarity score](AB%20test%20similarity%20score.py) where used to conduct the A/B tests on the pipeline.
+The [AB test](AB%20test.py) is the final A/B between the pipeline and native ChatGPT.
+
 ### A possible implementation of the pipeline
 **By running the script [Interface](Interface.py) an interactive interface of using the pipeline can be viewed and used.**
 Note that this script requires a .env file with an API-key for OpenAI. It also requires the folder [ANN](ANN) to be present.

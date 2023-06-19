@@ -1,0 +1,165 @@
+What is the purpose of association mining or rule-induction in machine learning?
+How does dimensionality reduction help in handling high-dimensional datasets?
+Can you explain the concept of reinforcement learning and its relationship to supervised learning?
+In the context of credit-card fraud detection, what approach can be used to identify transactions that deviate from common patterns?
+How are the handwritten digits from the MNIST dataset represented?
+What is the goal of building a machine for the MNIST digit recognition problem?
+What are the initial considerations a machine learning practitioner should make when presented with a problem for the first time?
+Why is understanding the available data crucial before proceeding with a machine learning task?
+In the context of the machine learning workflow, what does step 2 involve?
+Why is evaluation and dissemination of the model's performance important in the machine learning workflow?
+How is an observation defined in the context of a dataset?
+What is the distinction between a simple dataset and a non-simple dataset?
+Explain the concept of attribute or feature in the context of a dataset.
+Give an example of a simple dataset and its corresponding features.
+What are some characteristics of a non-simple dataset?
+How can temporal ordering be relevant in the context of a dataset?
+Why are simple datasets considered to cover a wide range of data?
+How can complex data, such as images or text, be transformed into a simple format for analysis?
+How is the weight of a car considered a continuous attribute?
+What is the difference between nominal and ordinal attributes?
+Who is credited with inventing Principal Component Analysis (PCA) and in what year was it invented?
+What are some alternative names for PCA in different fields?
+What is the purpose of finding a lower-dimensional representation of a high-dimensional dataset using PCA?
+In the context of PCA, what is the significance of an orthonormal basis for a subspace?
+What are the steps involved in the PCA algorithm?
+How can the SVD (Singular Value Decomposition) be computed in the PCA algorithm?
+What happens when n = M in the PCA algorithm?
+How can PCA be applied to the Fisher Iris dataset described in the provided figure?
+How can the correlation between attributes x and y be calculated?
+What does the correlation value tell us about the relationship between attributes?
+In the term-document matrix example, how are the documents represented?
+What is the purpose of the term-document matrix in analyzing news stories?
+In the context of determining if an image contains a cat or a dog, how can the problem be formulated?
+What are the essential rules that a measure of distance should obey?
+What is a metric in the context of distance measures?
+How are distances commonly defined using the magnitude of the difference between observations?
+How is the p < 1 case of the p-norm defined, and what is the p = 0 norm used for?
+In what sense is reasoning important for an intelligent robot?
+How is the degree of belief represented in terms of probabilities?
+What does P(G|E1E2E3E4) represent in the context of the trial example?
+How does the knowledge about the suspect's mom providing an alibi affect the belief in the suspect's guilt?
+In the context of visualizing one-dimensional data, what are the three common ways to represent a single 1D dataset?
+What is suggested as a strategy to make other methods stand out less in the performance visualization?
+Who are the mathematicians credited with applying linear regression models to astronomical observations?
+How can the linear regression model be trained using the sum-of-squares error function?
+How is logistic regression different from linear regression in terms of its application and objective?
+How is the Bernoulli distribution re-parameterized using the sigmoid function in logistic regression?
+How are true positives, false positives, false negatives, and true negatives defined in the context of logistic regression?
+What algorithm is used to construct the decision tree for classification?
+How is Hunt's algorithm applied in the decision tree induction process?
+How is the decision tree construction process applied recursively to build a complete tree?
+What is the importance of testing and quantifying the performance of machine learning methods?
+Why is the generalization error considered the fairest estimate of how well a model can perform?
+How is the generalization error related to the concept of overfitting?
+What problem does the generalization error overcome in comparison to the test error?
+What is the two-layer cross-validation method, and how does it address the limitations of the traditional approach?
+How is the generalization error estimated in the two-layer cross-validation method?
+How does the randomness in the test set affect the estimates of the generalization error?
+Which attributes are relevant to the purpose of predicting a patient's survival time after an operation?
+What is the problem with considering all possible models for feature selection?
+What are the two variations of sequential feature selection?
+What is sequential feature selection and how does it overcome the problem of considering all possible models?
+What is the purpose of statistical tests in performance evaluation?
+What is the distinction between setup I and setup II in statistical testing?
+What are the recommended statistical tests for comparing classifiers?
+How is the generalization error defined for two models MA and MB?
+What is the technical formulation for setup II in statistical testing?
+Which setup is recommended, and in what cases should setup I be considered?
+How are confidence intervals used in parameter estimation?
+In the simplest setup, if we have two models MA and MB, what is the goal when determining which model is better?
+How does the width of a confidence interval relate to the value of α?
+What are the two statistics involved in a confidence interval?
+What is the definition of a 1 - α confidence interval for θ?
+What is the concept of hypothesis testing in statistical inference?
+How are the training and test sets split in leave-one-out, K-fold, and hold-out cross-validation?
+What is the significance of choosing the Jeffrey prior as the prior distribution for estimating the probability of correct classification?
+Which form of cross-validation is suggested as the optimal choice for setup I, and why is this conclusion not applicable to setup II?
+What is the purpose of the credibility interval in the context of evaluating the performance of a single classifier?
+How does the number of observations (n) and the number of correct predictions (m) influence the credibility interval in the Jeffreys interval method?
+How is the p-value calculated in McNemar's test?
+What conditions should be satisfied for the confidence interval in the McNemar test to be considered useful?
+How is the null hypothesis defined in the McNemar test?
+What role does the central limit theorem play in obtaining a confidence interval for the generalization error?
+What is the formula for estimating the difference in generalization error between the two regression models?
+What type of loss functions are suggested to be used for computing the per-observation losses in the regression models?
+Why is it important to consider the variability in model performance from different training sets?
+How can the generalization error be estimated when using multiple independent training/test splits?
+What is the significance of selecting a suitable value for K in cross-validation?
+In the context of the K-nearest neighbor method, what factors are considered when determining the class of an observation?
+How is the K-neighbourhood of a point defined in the K-nearest neighbor method?
+What is the classification rule used in the K-nearest neighbor method?
+How is tie-breaking handled in the K-nearest neighbor classification rule?
+What is the significance of selecting different values of K in the K-nearest neighbor method?
+How can the K-nearest neighbor classifier be interpreted from a Bayesian perspective?
+How is the probability of an observation belonging to a particular class calculated in the K-nearest neighbor method?
+How is K-nearest neighbor (KNN) regression different from KNN classification?
+What is the prediction rule for KNN regression?
+How does the prediction rule change as K increases in KNN regression?
+How can KNN regression be extended to higher-order regression?
+How can cross-validation be used to select the value of K in KNN methods?
+What is Bayes' theorem and how is it applied in machine learning?
+What is the difference between discriminative and generative modeling?
+In the context of classification, how does logistic regression approach the problem?
+How does Bayesian inference differ from logistic regression in terms of modeling?
+What is generative modeling, and how does it relate to Bayesian inference?
+What is a Bayes classifier, and how does it classify new instances?
+How can multivariate normal distributions be used to model observations in a Bayes classifier?
+What is the Naïve-Bayes classifier and how does it differ from the standard Bayesian approach?
+What is the assumption made in the Naïve-Bayes classifier regarding the conditional distribution of features?
+What is the significance of the robust estimation technique used in the Naïve-Bayes classifier?
+How does the example of Fred's situation illustrate the use of Bayesian networks?
+What are the variables introduced to analyze Fred's story in the context of Bayesian networks?
+How is the probability of the alarm being triggered computed using the Bayesian network?
+What is the purpose of regularization in supervised learning settings?
+How does regularization help in controlling model complexity?
+What is the bias-variance decomposition of the generalization error?
+Who first considered the concept of regularization in 1943?
+Where can one find a good introduction to the tradeoff between bias and variance?
+What is the least squares regression model used for?
+Who originally invented artificial neural networks?
+What is the basic structure of artificial neural networks?
+What is the purpose of weighted connections in artificial neural networks?
+How is information processed in a feedforward neural network?
+What is the role of the input layer in a neural network?
+How does the choice of activation function impact training in a neural network?
+How is the general L-layer neural network constructed?
+What is the purpose of the bias term in each hidden unit of the neural network?
+What is the probability density function used to model the observations in the neural network?
+What is the re-parameterization trick used for in neural networks for binary classification?
+How is the probability density function modified for binary classification problems in neural networks?
+How does the modified softmax parameterization address the issue of asymmetry in multi-class classification?
+Why is it important to use cross-validation and tune hyperparameters when training neural networks?
+What is mini-batching in neural network training and why is it used?
+What is the advantage of using convolutional neural networks for image recognition?
+Why can accuracy be a misleading performance measure in the presence of class imbalance?
+What is the area under curve (AUC) of the receiver operating characteristic (ROC), and how is it useful for evaluating models in the presence of class imbalance?
+What are the three strategies discussed for dealing with class imbalance in binary classification?
+What is the significance of precision and recall in evaluating classifier performance, and how do they differ from accuracy?
+What is the F1 score, and how is it calculated using precision and recall?
+What are ensemble methods in machine learning, and how do they combine the outputs of multiple models to improve predictive performance?
+How are the outputs of classifiers combined in ensemble methods?
+Why do ensemble methods tend to work well in practice?
+Who developed the basic version of bagging for decision trees?
+What is the basic idea behind boosting?
+How are the weights updated in boosting?
+What is the AdaBoost algorithm used for?
+What are the three simple, distance-based cluster types?
+What is the goal of unsupervised learning techniques in the context of clustering?
+What happens in the K-means algorithm after the gray points are assigned to clusters?
+When does the K-means algorithm stop iterating?
+How is a cluster represented in K-means clustering?
+What limitation does hierarchical agglomerative clustering overcome compared to K-means clustering?
+ow is hierarchical agglomerative clustering different from K-means clustering in terms of organizing the data?
+What is a dendrogram and why is it important in hierarchical clustering?
+What are the three popular linkage functions used in hierarchical agglomerative clustering?
+How does Ward's method work in hierarchical agglomerative clustering?
+How do the different linkage functions perform when applied to a dataset consisting of two half-moons?
+Why does complete linkage fail to accurately identify clusters in a dataset with two differently-sized clusters?
+How can anomaly detection be related to density estimation?
+What is the primary density estimation tool mentioned for anomaly detection?
+How does a kernel density estimator (KDE) approximate the Gaussian mixture model (GMM)?
+In the context of uneven densities, why might the KDE or GMM not be suitable for outlier detection?
+What is the Apriori algorithm used for?
+What is the downwards closure property of itemsets?
+How can we compute the support for each itemset in the Apriori algorithm?

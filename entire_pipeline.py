@@ -89,6 +89,9 @@ def pipeline(query: str, method: str = 'cs', n_contexts: int = 5, chatgpt_prompt
     :param n_contexts: The number of contexts to return
     :param semantic_search_model: The semantic search model to use
     :param query: The query to search for
+    :param n_contexts: The number of contexts to return
+    :param method: The semantic search model to use
+
     :return:
     """
     # 1. Preprocess the query
@@ -236,7 +239,7 @@ def answer_generation(query: str, context: str = "", pipeline_mode=True, chatgpt
 if __name__ == "__main__":
     # Read in the data
     query = "What is the purpose of the Introduction to Machine Learning and Data Mining Lecture notes?"
-    answer_pipeline = pipeline(query, method='ann', n_contexts=2)
+    answer_pipeline = pipeline(query, method='cs', n_contexts=2)
     answer_chatgpt = answer_generation(query, pipeline_mode=False)
     print(answer_pipeline)
     print(answer_chatgpt)

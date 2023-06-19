@@ -28,8 +28,7 @@ def chatbot(input):
         return context_cs
 
 
-path = "C:/Users/farim/PycharmProjects/ChatGPT_Tutor_Project/Documents/"
-with open(path+'questions.txt') as f:
+with open("AB_Questions.txt") as f:
     lines = f.readlines()
 
 # select questions to use. Use index in lines to choose.
