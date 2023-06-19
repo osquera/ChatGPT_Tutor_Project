@@ -28,11 +28,11 @@ def chatbot(input):
         return context_cs, context_ann
 
 
-with open('questions.txt') as f:
+with open('message2.txt') as f:
     lines = f.readlines()
 
 # select questions to use. Use index in lines to choose.
-questions = [q[:-1] for q in lines[:31]]
+questions = [q[:-1] for q in lines[21:41]]
 
 outputs = gr.outputs.Textbox()
 inputs = []
