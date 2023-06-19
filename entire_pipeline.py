@@ -96,7 +96,7 @@ def pipeline(query: str, method: str = 'cs', n_contexts: int = 5, chatgpt_prompt
     # 2. Semantic Search
     best_ctx = semantic_search_model(embedding, method, n_contexts)
     # 3. Answer Generation
-    answer = answer_generation(query, best_ctx, chatgpt_prompt)
+    answer = answer_generation(query, best_ctx, chatgpt_prompt=chatgpt_prompt)
     # 4. Return the answer
     return answer, best_ctx
 
@@ -127,7 +127,7 @@ def semantic_search_model(embedding: np.ndarray, method: str = 'ann', n_contexts
                                  axis=1)
 
     if method == 'ann':
-        with open('ANN_resamp.json', 'r') as json_file:
+        with open('ANN/ANN_resamp.json', 'r') as json_file:
             loaded_model_json = json_file.read()
         json_file.close()
         loaded_model = model_from_json(loaded_model_json)
@@ -142,14 +142,14 @@ def semantic_search_model(embedding: np.ndarray, method: str = 'ann', n_contexts
         # Get the context
        # best_ctx_lst = [df.iloc[i]['context'].to_numpy()[0] for i in index]
        # best_ctx = '. '.join(best_ctx_lst)
-        best_ctx_lst = [f'CONTEXT {i + 1}: {df.iloc[j]["context"].to_numpy()[0]}' for i,j in enumerate(index)]
-        best_ctx = ''.join(best_ctx_lst)
+        best_ctx_lst = [df.iloc[i]["context"].to_numpy()[0] for i in index]
+        best_ctx = '\n'.join(best_ctx_lst)
 
         return best_ctx
 
 
     if method == 'weighted_cs':
-        with open('model_cos.json', 'r') as json_file:
+        with open('ANN/model_cos.json', 'r') as json_file:
             loaded_model_json = json_file.read()
         json_file.close()
         loaded_model = model_from_json(loaded_model_json, custom_objects={'CustomLayer': WeightedCosineSimilarity})
@@ -162,7 +162,7 @@ def semantic_search_model(embedding: np.ndarray, method: str = 'ann', n_contexts
         index = np.argsort(prediction, axis=0)[-n_contexts:]
         # Get the context
         best_ctx_lst = [df.iloc[i]['context'].to_numpy()[0] for i in index]
-        best_ctx = '. '.join(best_ctx_lst)
+        best_ctx = '\n'.join(best_ctx_lst)
 
         return best_ctx
 
@@ -179,8 +179,8 @@ def semantic_search_model(embedding: np.ndarray, method: str = 'ann', n_contexts
         #best_ctx_lst = [df.iloc[i]['context'] for i in index]
         #best_ctx = '. '.join(best_ctx_lst)
 
-        best_ctx_lst = [f'CONTEXT {i + 1}: {df.iloc[j]["context"]}' for i,j in enumerate(index)]
-        best_ctx = ''.join(best_ctx_lst)
+        best_ctx_lst = [df.iloc[i]["context"] for i in index]
+        best_ctx = '\n'.join(best_ctx_lst)
 
         return best_ctx
 
@@ -189,6 +189,7 @@ def semantic_search_model(embedding: np.ndarray, method: str = 'ann', n_contexts
 
 
 def answer_generation(query: str, context: str = "", pipeline_mode=True, chatgpt_prompt = "You are a Teachers Assistant and you should answer the QUESTION using the information given in the CONTEXT, if the CONTEXT is unrelated, you should ignore it."):
+
     """
     This function takes in a query and a context and uses the OpenAI API to generate an answer
     :param query:

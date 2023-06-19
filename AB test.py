@@ -10,21 +10,14 @@ def chatbot(input):
         return best_context, answer_pipeline, answer_chatgpt
 
 
-questions = [
-    "What is the purpose of regularization in machine learning?",
-    "What is the difference between supervised and unsupervised learning?",
-    "What are the key steps in building a machine learning model?",
-    "What is the role of feature engineering in machine learning?",
-    "What is the concept of overfitting in machine learning?",
-    "How does gradient descent work in training a neural network?",
-    "What is the trade-off between bias and variance in machine learning?",
-    "What is the purpose of cross-validation in machine learning?",
-    "What are some common evaluation metrics used in machine learning?",
-    "How can you handle missing data in a machine learning dataset?",
-]
+with open('message1.txt') as f:
+    lines = f.readlines()
+
+# select questions to use. Use index in lines to choose.
+questions = [q[:-1] for q in lines[:56]]
 
 
-def pipeline(query: str, method: str = 'cs', n_contexts: int = 5, chatgpt_prompt = "You are a Teachers Assistant and you should answer the QUESTION using the information given in the CONTEXT, if the CONTEXT is unrelated, you should ignore it."):
+def pipeline(query: str, method: str = 'cs', n_contexts: int = 5, chatgpt_prompt = "As a teacher's assistant for a machine learning course, your role is to assist students by answering their questions. You have over 20 years of experience and are regarded as one of the best in the field. You will be presented with a question and given several context paragraphs from the lecture notes. Your task is to answer the question as comprehensively and accurately as possible  Please thoroughly read the context paragraph and determine if any information is relevant to answer the question. Your answer should be based on your own high level of expertise and only use the information in the context paragraph if any is relevant. In case the question does not have any direct reference in the lecture notes, please state that the specific information is not mentioned in the lecture notes and proceed to answer the question based on your knowledge. You may give a long answer if the question requires it."):
     """
     This function is the pipeline for the entire project. It takes in a query and finds the most relevant document.
     and gives it to the OpenAI API to generate a answer
